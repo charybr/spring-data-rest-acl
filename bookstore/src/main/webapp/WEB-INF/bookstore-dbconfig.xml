@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+	    <property name="maximumPoolSize" value="${hikari.maxPoolSize}" />
+		<property name="dataSourceProperties">
+			<props>
+				<prop key="host">${jdbc.dbserver}</prop>
+                <prop key="port">${jdbc.dbport}</prop>
+                <prop key="database">${jdbc.dbname}</prop>
+				<prop key="user">${jdbc.username}</prop>
+				<prop key="password">${jdbc.password}</prop>
+				<prop key="housekeeper">${pgjdbc-ng.housekeeper}</prop>
+			</props>
+		</property>
+		<property name="dataSourceClassName" value="${jdbc.dataSourceClassName}" />
+	</bean>
+
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+		<constructor-arg ref="hikariConfig" />
+	</bean>  
+
+</beans>

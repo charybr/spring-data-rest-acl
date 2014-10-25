@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <!-- By default, the configuration file will be scanned for changes once 
+        every minute. -->
+
+    <appender name="ROLLING"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/var/log/bookstore/bookstore.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>/var/log/bookstore/bookstore-%d{yyyy-MM-dd}.%i.gz
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 100MB -->
+                <maxFileSize>5MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [%t] %-5p %logger{0} - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="sample.sdr.auth" level="debug" />
+    <logger name="org.hibernate" level="warn" />
+    <logger name="org.springframework" level="warn" />
+    <logger name="org.springframework.security" level="warn" />
+    <logger name="org.quartz" level="warn" />
+
+    <root level="warn">
+        <appender-ref ref="ROLLING" />
+    </root>
+</configuration>

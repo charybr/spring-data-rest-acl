@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/oxm
+		http://www.springframework.org/schema/oxm/spring-oxm.xsd
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+    <!--
+        IMPORTANT NOTE:
+        this file used only for testing during maven build 
+     -->
+     
+	<context:annotation-config/> <!-- for autowire with annotations -->
+
+    <import resource="bookstore-test-servlet.xml" />
+	
+    <context:property-placeholder
+        location="classpath:/bookstore-test.properties" 
+        ignore-resource-not-found="false"
+        ignore-unresolvable="true"
+        />      
+
+    <jdbc:embedded-database id="dataSource" type="HSQL" />
+        
+    <import resource="bookstore-jpaconfig.xml" />
+    <import resource="bookstore-spring-data-rest.xml" />
+    <import resource="bookstore-auth-config.xml" />
+    <import resource="bookstore-dao.xml" />
+				
+</beans>

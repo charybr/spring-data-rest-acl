@@ -1,0 +1,133 @@
+To discover what REST apis are available, issue an HTTP GET to the root URL:
+curl --user admin:admin123 -i -k -X GET  'http://localhost:8080/bookstore/' 
+
+output:
+HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+Set-Cookie: JSESSIONID=9865FFD13A04FE1D9D26BA0726533308; Path=/bookstore/; HttpOnly
+Content-Type: application/hal+json
+Transfer-Encoding: chunked
+Date: Sat, 25 Oct 2014 19:30:18 GMT
+
+{
+  "_links" : {
+    "books" : {
+      "href" : "http://localhost:8080/bookstore/book"
+    },
+    "roleEntities" : {
+      "href" : "http://localhost:8080/bookstore/role{?page,size,sort}",
+      "templated" : true
+    },
+    "userEntities" : {
+      "href" : "http://localhost:8080/bookstore/user{?page,size,sort}",
+      "templated" : true
+    }
+  }
+}
+
+
+Create a book
+curl --user admin:admin123 -i -k -X POST -Hcontent-type:application/json -HAccept:application/json --data '{"bookName" : "One Straw Revolution","description" : "about natural farming","author" : "Masanobu Fukuoka" }' http://localhost:8080/bookstore/book/
+
+output:
+HTTP/1.1 201 Created
+Server: Apache-Coyote/1.1
+Set-Cookie: JSESSIONID=B59C34DFA3897EEDA215B92A335BB739; Path=/bookstore/; HttpOnly
+Location: http://localhost:8080/bookstore/book/3
+Content-Length: 0
+Date: Sat, 25 Oct 2014 19:37:14 GMT
+
+
+Create a role:
+curl --user admin:admin123 -i -k -X POST -Hcontent-type:application/json -HAccept:application/json --data '{"authority" : "ROLE_USER"}' http://localhost:8080/bookstore/role/
+
+output:
+HTTP/1.1 201 Created
+Server: Apache-Coyote/1.1
+Set-Cookie: JSESSIONID=76DA36AE24B65817448DC75DE9DE1AA8; Path=/bookstore/; HttpOnly
+Location: http://localhost:8080/bookstore/role/5
+Content-Length: 0
+Date: Sat, 25 Oct 2014 19:42:26 GMT
+
+
+Create a user 
+curl --user admin:admin123 -i -k -X POST -Hcontent-type:application/json -HAccept:application/json --data '{"salutation" : "Mr.", "firstName" : "Bob", "lastName" : "Jr", "email" : "bob.jr@bookstore.com", "mobile" : null, "username" : "bob", "password" : "bob123", "enabled" : true, "roles" : [ "http://localhost:8080/bookstore/role/5"]}' http://localhost:8080/bookstore/user/
+
+output:
+HTTP/1.1 201 Created
+Server: Apache-Coyote/1.1
+Set-Cookie: JSESSIONID=A1BF733A46B4250383190F58E42F05D8; Path=/bookstore/; HttpOnly
+Location: http://localhost:8080/bookstore/user/6
+Content-Length: 0
+Date: Sat, 25 Oct 2014 19:48:54 GMT
+
+Fetch books visible to admin:
+curl --user admin:admin123 -i -k -X GET  'http://localhost:8080/bookstore/book' 
+
+output:
+HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+Set-Cookie: JSESSIONID=87AD10C3612E605B8BF9E9AF3B457FF2; Path=/bookstore/; HttpOnly
+Content-Type: application/hal+json
+Transfer-Encoding: chunked
+Date: Sat, 25 Oct 2014 19:49:59 GMT
+
+{
+  "_embedded" : {
+    "books" : [ {
+      "bookName" : "One Straw Revolution",
+      "description" : "about natural farming",
+      "author" : "Masanobu Fukuoka",
+      "_links" : {
+        "self" : {
+          "href" : "http://localhost:8080/bookstore/book/3"
+        }
+      }
+    } ]
+  }
+}
+
+Fetch books visible to user bob:
+curl --user bob:bob123 -i -k -X GET  'http://localhost:8080/bookstore/book' 
+
+output:
+HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+Set-Cookie: JSESSIONID=3174E89956407679E50BF135D38A58F6; Path=/bookstore/; HttpOnly
+Content-Type: application/hal+json
+Transfer-Encoding: chunked
+Date: Sat, 25 Oct 2014 19:51:15 GMT
+
+{ }
+
+Provide READ permission to bob:
+curl --user admin:admin123 -k -X POST -Hcontent-type:application/json -HAccept:application/json --data '{"aclList":[{"entityClassName":"Book","entityId":3,"userName": "bob","permission":0}]}' http://localhost:8080/bookstore/acl/user/generic/
+
+output:
+["Successfully added all ACLs"]
+
+Now fetch books visible to user bob:
+curl --user bob:bob123 -i -k -X GET  'http://localhost:8080/bookstore/book' 
+
+output:
+HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+Set-Cookie: JSESSIONID=79624CC74339FC56C0234982273CDD6D; Path=/bookstore/; HttpOnly
+Content-Type: application/hal+json
+Transfer-Encoding: chunked
+Date: Sat, 25 Oct 2014 21:06:43 GMT
+
+{
+  "_embedded" : {
+    "books" : [ {
+      "bookName" : "One Straw Revolution",
+      "description" : "about natural farming",
+      "author" : "Masanobu Fukuoka",
+      "_links" : {
+        "self" : {
+          "href" : "http://localhost:8080/bookstore/book/3"
+        }
+      }
+    } ]
+  }
+}

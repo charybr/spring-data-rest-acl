@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans.xsd 
+http://www.springframework.org/schema/security 
+http://www.springframework.org/schema/security/spring-security.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/util
+http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<security:http auto-config="true" use-expressions="true">
+		<security:intercept-url pattern="/all/**"
+			access="permitAll" />
+		<security:intercept-url pattern="/**"
+			access="isAuthenticated()" />
+
+		<security:form-login default-target-url="/login_success"
+			authentication-failure-url="/all/login_failure" />
+		<security:http-basic />
+		<!-- <security:remember-me /> -->
+
+		<security:session-management>
+			<security:concurrency-control
+				max-sessions="1" session-registry-alias="sessionRegistry"
+				expired-url="/all/invalid_session" />
+		</security:session-management>
+		<security:logout logout-success-url="/all/logout" />
+	</security:http>
+
+	<bean id="sessionRegistry"
+		class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+	<bean id="pwdEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+	<bean id="customUserDetailsService" class="sample.sdr.auth.security.CustomUserDetailsService" />
+
+	<security:authentication-manager>
+		<security:authentication-provider
+			user-service-ref="customUserDetailsService" >
+			<security:password-encoder ref="pwdEncoder" />
+		</security:authentication-provider>
+
+		<!-- can be used for multiple auth providers like openid, ldap auth providers 
+			<security:authentication-provider ref="" /> -->
+	</security:authentication-manager>
+
+</beans>
