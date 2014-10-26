@@ -8,6 +8,7 @@ This is referred by:
 http://stackoverflow.com/questions/26546072/using-spring-security-acl-with-spring-data-rest
 
 Steps to deploy and run Bookstore sample:
+
 Note that "conf" directory contains config files that needs to be placed at /etc/bookstore/.
 	- bookstore.properties for configuring database, hibernate, connection-pooling
 	- logback.xml for setting log levels. Set log file location - /var/log/bookstore/bookstore.log
