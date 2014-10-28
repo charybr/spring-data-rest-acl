@@ -1,13 +1,13 @@
 spring-data-rest-acl
 ====================
 
-# Spring Security ACL with Spring Data REST
+## Spring Security ACL with Spring Data REST
 
 This is a sample project to illustrate how to use ACL-based Authorization for entities exposed by Spring Data REST.
 This is referred by:
 http://stackoverflow.com/questions/26546072/using-spring-security-acl-with-spring-data-rest
 
-## Steps to deploy and run Bookstore sample:
+#### Steps to deploy and run Bookstore sample:
 
 Note that "conf" directory contains config files that needs to be placed at /etc/bookstore/.
 	- bookstore.properties for configuring database, hibernate, connection-pooling
